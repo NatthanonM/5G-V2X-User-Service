@@ -1,0 +1,31 @@
+syntax = "proto3";
+package proto;
+option go_package = ".;proto";
+
+import "google/protobuf/empty.proto";
+
+message VerifyAdminAccessTokenRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message VerifyAdminAccessTokenResponse { string access_token = 1; }
+
+message RegisterAdminRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginAdminRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginAdminResponse { string access_token = 1; }
+
+service AdminService {
+  rpc VerifyAdminAccessToken(VerifyAdminAccessTokenRequest)
+      returns (VerifyAdminAccessTokenResponse) {}
+  rpc RegisterAdmin(RegisterAdminRequest) returns (google.protobuf.Empty) {}
+  rpc LoginAdmin(LoginAdminRequest) returns (LoginAdminResponse) {}
+}
