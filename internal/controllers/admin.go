@@ -28,6 +28,9 @@ func (ac *AdminController) VerifyAdminAccessToken(ctx context.Context, req *prot
 }
 
 func (ac *AdminController) RegisterAdmin(ctx context.Context, req *proto.RegisterAdminRequest) (*empty.Empty, error) {
+	if err := ac.AdminService.Register(req.Username, req.Password); err != nil {
+		return nil, err
+	}
 	return new(empty.Empty), nil
 }
 
