@@ -4,12 +4,9 @@ option go_package = ".;proto";
 
 import "google/protobuf/empty.proto";
 
-message VerifyAdminAccessTokenRequest {
-  string username = 1;
-  string password = 2;
-}
+message VerifyAdminAccessTokenRequest { string access_token = 1; }
 
-message VerifyAdminAccessTokenResponse { string access_token = 1; }
+message VerifyAdminAccessTokenResponse { string username = 1; }
 
 message RegisterAdminRequest {
   string username = 1;

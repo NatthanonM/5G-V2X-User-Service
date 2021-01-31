@@ -37,24 +37,24 @@ func GenerateAccessToken(username, hashedPassword string) (string, error) {
 }
 
 // ExtractAccessToken ...
-func ExtractAccessToken(accessToken *AccessToken, token string) error {
+func ExtractAccessToken(token string) (*AccessToken, error) {
 	decoded, err := base64decode(token)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	arr := strings.Split(decoded, SEPARATOR)
 	if len(arr) != 3 {
-		return errors.New("Invalid access token length")
+		return nil, errors.New("Invalid access token length")
 	}
 
 	// fmt.Println(accessToken)
 
-	accessToken.Username = arr[0]
-	accessToken.Expires = arr[1]
-	accessToken.Signature = arr[2]
-
-	return nil
+	return &AccessToken{
+		Username:  arr[0],
+		Expires:   arr[1],
+		Signature: arr[2],
+	}, nil
 }
 
 // VerifyAccessToken ...

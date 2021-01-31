@@ -22,8 +22,14 @@ func NewAdminController(AdminService *services.AdminService, Config *config.Conf
 }
 
 func (ac *AdminController) VerifyAdminAccessToken(ctx context.Context, req *proto.VerifyAdminAccessTokenRequest) (*proto.VerifyAdminAccessTokenResponse, error) {
+	userAccessToken := req.AccessToken
+
+	admin, err := ac.AdminService.VerifyAccessToken(userAccessToken)
+	if err != nil {
+		return nil, err
+	}
 	return &proto.VerifyAdminAccessTokenResponse{
-		AccessToken: "",
+		Username: admin.Username,
 	}, nil
 }
 
@@ -35,7 +41,17 @@ func (ac *AdminController) RegisterAdmin(ctx context.Context, req *proto.Registe
 }
 
 func (ac *AdminController) LoginAdmin(ctx context.Context, req *proto.LoginAdminRequest) (*proto.LoginAdminResponse, error) {
+	admin, err := ac.AdminService.CheckEmailPassword(req.Username, req.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	accessToken, err := ac.AdminService.GetAccessTokens(req.Username, admin.HashedPassword)
+	if err != nil {
+		return nil, err
+	}
+
 	return &proto.LoginAdminResponse{
-		AccessToken: "",
+		AccessToken: accessToken,
 	}, nil
 }
