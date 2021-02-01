@@ -1,0 +1,25 @@
+syntax = "proto3";
+package proto;
+option go_package = ".;proto";
+
+import "google/protobuf/timestamp.proto";
+// import "google/protobuf/empty.proto";
+
+message AddNewDriverRequest {
+  string firstname = 1;
+  string lastname = 2;
+  string username = 3;
+  string password = 4;
+  google.protobuf.Timestamp date_of_birth = 5;
+  GenderType gender = 6;
+  enum GenderType {
+    MALE = 0;
+    FEMALE = 1;
+  }
+}
+
+message AddNewDriverReponse { string driver_id = 1; }
+
+service DriverService {
+  rpc AddNewDriver(AddNewDriverRequest) returns (AddNewDriverReponse) {}
+}

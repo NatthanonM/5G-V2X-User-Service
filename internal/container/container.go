@@ -48,13 +48,25 @@ func (cn *Container) Configure() {
 		cn.Error = err
 	}
 
+	if err := cn.container.Provide(controller.NewDriverController); err != nil {
+		cn.Error = err
+	}
+
 	// services
 	if err := cn.container.Provide(services.NewAdminService); err != nil {
 		cn.Error = err
 	}
 
+	if err := cn.container.Provide(services.NewDriverService); err != nil {
+		cn.Error = err
+	}
+
 	// repositories
 	if err := cn.container.Provide(repositories.NewAdminRepository); err != nil {
+		cn.Error = err
+	}
+
+	if err := cn.container.Provide(repositories.NewDriverRepository); err != nil {
 		cn.Error = err
 	}
 

@@ -60,6 +60,7 @@ func init() {
 
 func (g *GRPCServer) registerServer() {
 	pkg.RegisterAdminServiceServer(grpcServe, g.GRPCGateway.ControllerGateway.AdminController)
+	pkg.RegisterDriverServiceServer(grpcServe, g.GRPCGateway.ControllerGateway.DriverController)
 }
 
 func (g *GRPCServer) Start() error {

@@ -9,6 +9,7 @@ type Controller struct {
 type ControllerGateway struct {
 	dig.In
 	*AdminController
+	*DriverController
 }
 
 func NewController(cg *ControllerGateway) *Controller {
