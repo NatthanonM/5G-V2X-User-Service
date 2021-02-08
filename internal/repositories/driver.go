@@ -10,7 +10,6 @@ import (
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type DriverRepository struct {
@@ -64,10 +63,21 @@ func (dr *DriverRepository) FindOne(filter map[string]interface{}) (*models.Driv
 	return result, nil
 }
 
-func (dr *DriverRepository) Find(filter primitive.D) ([]*models.Driver, error) {
+func (dr *DriverRepository) Find(filter map[string]interface{}) ([]*models.Driver, error) {
 	collection := dr.MONGO.Client.Database(dr.config.DatabaseName).Collection("driver")
 
 	var results []*models.Driver
+
+	jsonString, err := json.Marshal(filter)
+	if err != nil {
+		panic(err)
+	}
+
+	var bsonFilter interface{}
+	err = bson.UnmarshalExtJSON([]byte(jsonString), true, &bsonFilter)
+	if err != nil {
+		panic(err)
+	}
 
 	cur, err := collection.Find(context.TODO(), filter)
 	if err != nil {

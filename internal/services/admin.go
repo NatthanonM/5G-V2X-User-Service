@@ -12,11 +12,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// AdminService ..
 type AdminService struct {
 	*repositories.AdminRepository
 	*config.Config
 }
 
+// NewAdminService ...
 func NewAdminService(AdminRepository *repositories.AdminRepository, Config *config.Config) *AdminService {
 	return &AdminService{
 		AdminRepository: AdminRepository,
@@ -58,6 +60,7 @@ func (as *AdminService) VerifyAccessToken(StringAccessToken string) (*models.Adm
 	return admin, nil
 }
 
+// Register ...
 func (as *AdminService) Register(username, password string) error {
 	hashed, err := utils.HashAndSalt([]byte(password))
 	if err != nil {

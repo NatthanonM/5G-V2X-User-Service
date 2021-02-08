@@ -64,3 +64,19 @@ func (ds *DriverController) GetAllDriver(ctx context.Context, req *empty.Empty) 
 		Drivers: resDrivers,
 	}, nil
 }
+
+func (ds *DriverController) GetDriver(ctx context.Context, req *proto.GetDriverRequest) (*proto.Driver, error) {
+	driver, err := ds.DriverService.GetDriver(req.DriverId)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return &proto.Driver{
+		DriverID:    driver.DriverID,
+		Firstname:   driver.Firstname,
+		Lastname:    driver.Lastname,
+		DateOfBirth: utils.WrapperTime(&driver.DateOfBirth),
+		Gender:      driver.Gender,
+	}, nil
+}
