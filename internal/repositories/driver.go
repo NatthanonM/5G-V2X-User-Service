@@ -10,6 +10,7 @@ import (
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type DriverRepository struct {
@@ -61,4 +62,32 @@ func (dr *DriverRepository) FindOne(filter map[string]interface{}) (*models.Driv
 		return nil, err
 	}
 	return result, nil
+}
+
+func (dr *DriverRepository) Find(filter primitive.D) ([]*models.Driver, error) {
+	collection := dr.MONGO.Client.Database(dr.config.DatabaseName).Collection("driver")
+
+	var results []*models.Driver
+
+	cur, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+
+	for cur.Next(context.TODO()) {
+		var elem models.Driver
+		err := cur.Decode(&elem)
+		if err != nil {
+			return nil, err
+		}
+		results = append(results, &elem)
+	}
+
+	if err := cur.Err(); err != nil {
+		return nil, err
+	}
+
+	cur.Close(context.TODO())
+
+	return results, nil
 }

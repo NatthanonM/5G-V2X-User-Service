@@ -3,7 +3,7 @@ package proto;
 option go_package = ".;proto";
 
 import "google/protobuf/timestamp.proto";
-// import "google/protobuf/empty.proto";
+import "google/protobuf/empty.proto";
 
 message AddNewDriverRequest {
   string firstname = 1;
@@ -18,8 +18,19 @@ message AddNewDriverRequest {
   }
 }
 
+message Driver {
+  string DriverID = 1;
+  string firstname = 2;
+  string lastname = 3;
+  google.protobuf.Timestamp date_of_birth = 4;
+  string gender = 5;
+}
+
+message GetAllDriverResponse { repeated Driver drivers = 1; }
+
 message AddNewDriverReponse { string driver_id = 1; }
 
 service DriverService {
   rpc AddNewDriver(AddNewDriverRequest) returns (AddNewDriverReponse) {}
+  rpc GetAllDriver(google.protobuf.Empty) returns (GetAllDriverResponse) {}
 }

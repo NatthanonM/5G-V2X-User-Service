@@ -6,6 +6,7 @@ import (
 	"5g-v2x-user-service/internal/repositories"
 	"5g-v2x-user-service/internal/utils"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -42,4 +43,12 @@ func (ds *DriverService) AddNewDriver(driver *models.Driver) (*string, error) {
 	}
 
 	return &driverID, nil
+}
+
+func (ds *DriverService) GetAllDriver() ([]*models.Driver, error) {
+	drivers, err := ds.DriverRepository.Find(bson.D{{}})
+	if err != nil {
+		return nil, err
+	}
+	return drivers, nil
 }
