@@ -5,7 +5,6 @@ import (
 	"5g-v2x-user-service/internal/models"
 	"5g-v2x-user-service/internal/repositories"
 	"5g-v2x-user-service/internal/utils"
-	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
