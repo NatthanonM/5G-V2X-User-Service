@@ -5,7 +5,7 @@ import (
 	"5g-v2x-user-service/internal/models"
 	"5g-v2x-user-service/internal/repositories"
 	"5g-v2x-user-service/internal/utils"
-
+	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -65,5 +65,17 @@ func (ds *DriverService) GetDriver(driverID string) (*models.Driver, error) {
 	if err != nil {
 		return nil, status.Error(codes.NotFound, "Driver not found.")
 	}
+	return driver, nil
+}
+
+func (ds *DriverService) GetDriverByUsername(username string) (*models.Driver, error) {
+	filter := make(map[string]interface{})
+	filter["username"] = username
+
+	driver, err := ds.DriverRepository.FindOne(filter)
+	if err != nil {
+		return nil, err
+	}
+
 	return driver, nil
 }

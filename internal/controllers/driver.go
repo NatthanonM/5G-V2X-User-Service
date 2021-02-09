@@ -7,6 +7,7 @@ import (
 	"5g-v2x-user-service/internal/utils"
 	proto "5g-v2x-user-service/pkg/api"
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/golang/protobuf/ptypes/empty"
@@ -80,5 +81,16 @@ func (ds *DriverController) GetDriver(ctx context.Context, req *proto.GetDriverR
 		DateOfBirth: utils.WrapperTime(&driver.DateOfBirth),
 		Gender:      driver.Gender,
 		Username:    driver.Username,
+	}, nil
+}
+
+func (ds *DriverController) GetDriverByUsername(ctx context.Context, req *proto.GetDriverByUsernameRequest) (*proto.GetDriverByUsernameResponse, error) {
+	driver, err := ds.DriverService.GetDriverByUsername(req.Username)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(driver)
+	return &proto.GetDriverByUsernameResponse{
+		DriverId: driver.DriverID,
 	}, nil
 }
