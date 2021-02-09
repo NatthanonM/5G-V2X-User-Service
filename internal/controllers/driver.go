@@ -53,11 +53,12 @@ func (ds *DriverController) GetAllDriver(ctx context.Context, req *empty.Empty) 
 	var resDrivers []*proto.Driver
 	for _, driver := range drivers {
 		resDrivers = append(resDrivers, &proto.Driver{
-			DriverID:    driver.DriverID,
+			DriverId:    driver.DriverID,
 			Firstname:   driver.Firstname,
 			Lastname:    driver.Lastname,
 			DateOfBirth: utils.WrapperTime(&driver.DateOfBirth),
 			Gender:      driver.Gender,
+			Username:    driver.Username,
 		})
 	}
 	return &proto.GetAllDriverResponse{
@@ -73,10 +74,11 @@ func (ds *DriverController) GetDriver(ctx context.Context, req *proto.GetDriverR
 	}
 
 	return &proto.Driver{
-		DriverID:    driver.DriverID,
+		DriverId:    driver.DriverID,
 		Firstname:   driver.Firstname,
 		Lastname:    driver.Lastname,
 		DateOfBirth: utils.WrapperTime(&driver.DateOfBirth),
 		Gender:      driver.Gender,
+		Username:    driver.Username,
 	}, nil
 }

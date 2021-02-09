@@ -24,6 +24,7 @@ message Driver {
   string lastname = 3;
   google.protobuf.Timestamp date_of_birth = 4;
   string gender = 5;
+  string username = 6;
 }
 
 message GetAllDriverResponse { repeated Driver drivers = 1; }
