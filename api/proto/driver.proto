@@ -40,7 +40,6 @@ message GetDriverByUsernameResponse { string driver_id = 1; }
 message LoginDriverRequest {
   string username = 1;
   string password = 2;
-  string car_id = 3;
 }
 
 message LoginDriverResponse { string driver_id = 1; }
