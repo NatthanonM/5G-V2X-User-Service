@@ -94,3 +94,15 @@ func (ds *DriverController) GetDriverByUsername(ctx context.Context, req *proto.
 		DriverId: driver.DriverID,
 	}, nil
 }
+
+func (ds *DriverController) LoginDriver(ctx context.Context, req *proto.LoginDriverRequest) (*proto.LoginDriverResponse, error) {
+	driver, err := ds.DriverService.CheckEmailPassword(req.Username, req.Password)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.LoginDriverResponse{
+		DriverId: driver.DriverID,
+	}, nil
+}

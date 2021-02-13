@@ -5,6 +5,7 @@ import (
 	"5g-v2x-user-service/internal/models"
 	"5g-v2x-user-service/internal/repositories"
 	"5g-v2x-user-service/internal/utils"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -74,6 +75,25 @@ func (ds *DriverService) GetDriverByUsername(username string) (*models.Driver, e
 	driver, err := ds.DriverRepository.FindOne(filter)
 	if err != nil {
 		return nil, err
+	}
+
+	return driver, nil
+}
+
+// CheckEmailPassword ...
+func (ds *DriverService) CheckEmailPassword(username, password string) (*models.Driver, error) {
+	// find user
+	filter := make(map[string]interface{})
+	filter["username"] = username
+
+	driver, err := ds.DriverRepository.FindOne(filter)
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, "Username or password is incorrect.")
+	}
+
+	// verify password
+	if !driver.VerifyPassword(password) {
+		return nil, status.Error(codes.Unauthenticated, "Username or password is incorrect.")
 	}
 
 	return driver, nil
