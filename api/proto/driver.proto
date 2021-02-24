@@ -35,8 +35,6 @@ message GetDriverRequest { string driver_id = 1; }
 
 message GetDriverByUsernameRequest { string username = 1; }
 
-message GetDriverByUsernameResponse { string driver_id = 1; }
-
 message LoginDriverRequest {
   string username = 1;
   string password = 2;
@@ -48,7 +46,6 @@ service DriverService {
   rpc AddNewDriver(AddNewDriverRequest) returns (AddNewDriverReponse) {}
   rpc GetDriver(GetDriverRequest) returns (Driver) {}
   rpc GetAllDriver(google.protobuf.Empty) returns (GetAllDriverResponse) {}
-  rpc GetDriverByUsername(GetDriverByUsernameRequest)
-      returns (GetDriverByUsernameResponse) {}
+  rpc GetDriverByUsername(GetDriverByUsernameRequest) returns (Driver) {}
   rpc LoginDriver(LoginDriverRequest) returns (LoginDriverResponse) {}
 }

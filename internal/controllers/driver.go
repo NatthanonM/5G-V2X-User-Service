@@ -84,14 +84,19 @@ func (ds *DriverController) GetDriver(ctx context.Context, req *proto.GetDriverR
 	}, nil
 }
 
-func (ds *DriverController) GetDriverByUsername(ctx context.Context, req *proto.GetDriverByUsernameRequest) (*proto.GetDriverByUsernameResponse, error) {
+func (ds *DriverController) GetDriverByUsername(ctx context.Context, req *proto.GetDriverByUsernameRequest) (*proto.Driver, error) {
 	driver, err := ds.DriverService.GetDriverByUsername(req.Username)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(driver)
-	return &proto.GetDriverByUsernameResponse{
-		DriverId: driver.DriverID,
+	return &proto.Driver{
+		DriverId:    driver.DriverID,
+		Firstname:   driver.Firstname,
+		Lastname:    driver.Lastname,
+		DateOfBirth: utils.WrapperTime(&driver.DateOfBirth),
+		Gender:      driver.Gender,
+		Username:    driver.Username,
 	}, nil
 }
 
