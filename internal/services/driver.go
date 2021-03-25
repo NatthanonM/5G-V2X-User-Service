@@ -98,3 +98,18 @@ func (ds *DriverService) CheckEmailPassword(username, password string) (*models.
 
 	return driver, nil
 }
+
+func (ds *DriverService) UpdateDriver(updateDriver *models.Driver) error {
+	_, err := ds.GetDriver(updateDriver.DriverID)
+
+	if err != nil {
+		return status.Error(codes.NotFound, "Driver not found")
+	}
+
+	err = ds.DriverRepository.Update(updateDriver)
+	if err != nil {
+		return status.Error(codes.Internal, "Update driver failed")
+	}
+
+	return err
+}

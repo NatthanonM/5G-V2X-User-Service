@@ -101,3 +101,21 @@ func (dr *DriverRepository) Find(filter map[string]interface{}) ([]*models.Drive
 
 	return results, nil
 }
+
+func (dr *DriverRepository) Update(updateDriver *models.Driver) error {
+	collection := dr.MONGO.Client.Database(dr.config.DatabaseName).Collection("driver")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	bsonFilter := bson.M{"_id": updateDriver.DriverID}
+	bsonUpdate := bson.D{
+		{"$set", bson.D{{"firstname", updateDriver.Firstname}, {"lastname", updateDriver.Lastname}, {"date_of_birth", updateDriver.DateOfBirth}}},
+	}
+
+	_, err := collection.UpdateOne(ctx, bsonFilter, bsonUpdate)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -42,10 +42,20 @@ message LoginDriverRequest {
 
 message LoginDriverResponse { string driver_id = 1; }
 
+message UpdateDriverRequest {
+  string driver_id = 1;
+  string firstname = 2;
+  string lastname = 3;
+  google.protobuf.Timestamp date_of_birth = 4;
+}
+
+message UpdateDriverResponse {}
+
 service DriverService {
   rpc AddNewDriver(AddNewDriverRequest) returns (AddNewDriverReponse) {}
   rpc GetDriver(GetDriverRequest) returns (Driver) {}
   rpc GetAllDriver(google.protobuf.Empty) returns (GetAllDriverResponse) {}
   rpc GetDriverByUsername(GetDriverByUsernameRequest) returns (Driver) {}
   rpc LoginDriver(LoginDriverRequest) returns (LoginDriverResponse) {}
+  rpc UpdateDriver(UpdateDriverRequest) returns (UpdateDriverResponse) {}
 }

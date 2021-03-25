@@ -111,3 +111,18 @@ func (ds *DriverController) LoginDriver(ctx context.Context, req *proto.LoginDri
 		DriverId: driver.DriverID,
 	}, nil
 }
+
+func (ds *DriverController) UpdateDriver(ctx context.Context, req *proto.UpdateDriverRequest) (*proto.UpdateDriverResponse, error) {
+	err := ds.DriverService.UpdateDriver(&models.Driver{
+		DriverID:    req.DriverId,
+		Firstname:   req.Firstname,
+		Lastname:    req.Lastname,
+		DateOfBirth: req.DateOfBirth.AsTime(),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.UpdateDriverResponse{}, nil
+}
