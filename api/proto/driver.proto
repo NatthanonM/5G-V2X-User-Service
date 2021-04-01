@@ -51,6 +51,10 @@ message UpdateDriverRequest {
 
 message UpdateDriverResponse {}
 
+message DeleteDriverRequest { string driver_id = 1; }
+
+message DeleteDriverResponse {}
+
 service DriverService {
   rpc AddNewDriver(AddNewDriverRequest) returns (AddNewDriverReponse) {}
   rpc GetDriver(GetDriverRequest) returns (Driver) {}
@@ -58,4 +62,5 @@ service DriverService {
   rpc GetDriverByUsername(GetDriverByUsernameRequest) returns (Driver) {}
   rpc LoginDriver(LoginDriverRequest) returns (LoginDriverResponse) {}
   rpc UpdateDriver(UpdateDriverRequest) returns (UpdateDriverResponse) {}
+  rpc DeleteDriver(DeleteDriverRequest) returns (DeleteDriverResponse) {}
 }

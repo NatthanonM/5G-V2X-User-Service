@@ -5,7 +5,6 @@ import (
 	"5g-v2x-user-service/internal/infrastructures/database"
 	"5g-v2x-user-service/internal/models"
 	"context"
-	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -38,45 +37,54 @@ func (dr *DriverRepository) Create(driver *models.Driver) (string, error) {
 	return id.String(), nil
 }
 
-func (dr *DriverRepository) FindOne(filter map[string]interface{}) (*models.Driver, error) {
+func (dr *DriverRepository) FindOne(driverID, username *string) (*models.Driver, error) {
 	collection := dr.MONGO.Client.Database(dr.config.DatabaseName).Collection("driver")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	var result *models.Driver
 
-	jsonString, err := json.Marshal(filter)
-	if err != nil {
-		panic(err)
+	filterDeleted := bson.M{
+		"deleted_at": bson.M{
+			"$eq": nil,
+		},
 	}
 
-	var bsonFilter interface{}
-	err = bson.UnmarshalExtJSON([]byte(jsonString), true, &bsonFilter)
-	if err != nil {
-		panic(err)
+	inputFilter := bson.M{}
+
+	if driverID != nil {
+		inputFilter = bson.M{
+			"_id": *driverID,
+		}
+	} else if username != nil {
+		inputFilter = bson.M{
+			"username": *username,
+		}
 	}
 
-	err = collection.FindOne(ctx, bsonFilter).Decode(&result)
+	filter := bson.M{
+		"$and": []bson.M{
+			filterDeleted,
+			inputFilter,
+		},
+	}
+
+	err := collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func (dr *DriverRepository) Find(filter map[string]interface{}) ([]*models.Driver, error) {
+func (dr *DriverRepository) Find() ([]*models.Driver, error) {
 	collection := dr.MONGO.Client.Database(dr.config.DatabaseName).Collection("driver")
 
 	var results []*models.Driver
 
-	jsonString, err := json.Marshal(filter)
-	if err != nil {
-		panic(err)
-	}
-
-	var bsonFilter interface{}
-	err = bson.UnmarshalExtJSON([]byte(jsonString), true, &bsonFilter)
-	if err != nil {
-		panic(err)
+	filter := bson.M{
+		"deleted_at": bson.M{
+			"$eq": nil,
+		},
 	}
 
 	cur, err := collection.Find(context.TODO(), filter)
@@ -110,6 +118,24 @@ func (dr *DriverRepository) Update(updateDriver *models.Driver) error {
 	bsonFilter := bson.M{"_id": updateDriver.DriverID}
 	bsonUpdate := bson.D{
 		{"$set", bson.D{{"firstname", updateDriver.Firstname}, {"lastname", updateDriver.Lastname}, {"date_of_birth", updateDriver.DateOfBirth}}},
+	}
+
+	_, err := collection.UpdateOne(ctx, bsonFilter, bsonUpdate)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (dr *DriverRepository) Delete(driverID string) error {
+	collection := dr.MONGO.Client.Database(dr.config.DatabaseName).Collection("driver")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	bsonFilter := bson.M{"_id": driverID}
+	bsonUpdate := bson.D{
+		{"$set", bson.D{{"deleted_at", time.Now().UTC()}}},
 	}
 
 	_, err := collection.UpdateOne(ctx, bsonFilter, bsonUpdate)

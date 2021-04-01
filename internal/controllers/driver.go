@@ -126,3 +126,13 @@ func (ds *DriverController) UpdateDriver(ctx context.Context, req *proto.UpdateD
 
 	return &proto.UpdateDriverResponse{}, nil
 }
+
+func (ds *DriverController) DeleteDriver(ctx context.Context, req *proto.DeleteDriverRequest) (*proto.DeleteDriverResponse, error) {
+	err := ds.DriverService.DeleteDriver(req.DriverId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.DeleteDriverResponse{}, nil
+}

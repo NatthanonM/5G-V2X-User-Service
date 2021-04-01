@@ -6,14 +6,15 @@ import (
 )
 
 type Driver struct {
-	DriverID       string    `bson:"_id"`
-	Firstname      string    `bson:"firstname"`
-	Lastname       string    `bson:"lastname"`
-	Username       string    `bson:"username"`
-	Password       string    `bson:"-"`
-	HashedPassword string    `bson:"hashed_password"`
-	DateOfBirth    time.Time `bson:"date_of_birth"`
-	Gender         string    `bson:"gender"`
+	DriverID       string     `bson:"_id"`
+	Firstname      string     `bson:"firstname"`
+	Lastname       string     `bson:"lastname"`
+	Username       string     `bson:"username"`
+	Password       string     `bson:"-"`
+	HashedPassword string     `bson:"hashed_password"`
+	DateOfBirth    time.Time  `bson:"date_of_birth"`
+	Gender         string     `bson:"gender"`
+	DeletedAt      *time.Time `bson:"deleted_at"`
 }
 
 // VerifyPassword is ...

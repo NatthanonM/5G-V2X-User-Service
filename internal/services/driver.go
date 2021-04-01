@@ -32,10 +32,7 @@ func (ds *DriverService) AddNewDriver(driver *models.Driver) (*string, error) {
 	}
 	driver.HashedPassword = hashed
 
-	filter := make(map[string]interface{})
-	filter["username"] = driver.Username
-
-	if _, err := ds.DriverRepository.FindOne(filter); err == nil {
+	if _, err := ds.DriverRepository.FindOne(nil, &driver.Username); err == nil {
 		return nil, status.Error(codes.AlreadyExists, "Username is already existed")
 	}
 
@@ -49,8 +46,7 @@ func (ds *DriverService) AddNewDriver(driver *models.Driver) (*string, error) {
 
 // GetAllDriver ...
 func (ds *DriverService) GetAllDriver() ([]*models.Driver, error) {
-	filter := make(map[string]interface{})
-	drivers, err := ds.DriverRepository.Find(filter)
+	drivers, err := ds.DriverRepository.Find()
 	if err != nil {
 		return nil, err
 	}
@@ -59,9 +55,7 @@ func (ds *DriverService) GetAllDriver() ([]*models.Driver, error) {
 
 // GetDriver ...
 func (ds *DriverService) GetDriver(driverID string) (*models.Driver, error) {
-	filter := make(map[string]interface{})
-	filter["_id"] = driverID
-	driver, err := ds.DriverRepository.FindOne(filter)
+	driver, err := ds.DriverRepository.FindOne(&driverID, nil)
 	if err != nil {
 		return nil, status.Error(codes.NotFound, "Driver not found.")
 	}
@@ -69,10 +63,7 @@ func (ds *DriverService) GetDriver(driverID string) (*models.Driver, error) {
 }
 
 func (ds *DriverService) GetDriverByUsername(username string) (*models.Driver, error) {
-	filter := make(map[string]interface{})
-	filter["username"] = username
-
-	driver, err := ds.DriverRepository.FindOne(filter)
+	driver, err := ds.DriverRepository.FindOne(nil, &username)
 	if err != nil {
 		return nil, err
 	}
@@ -83,10 +74,7 @@ func (ds *DriverService) GetDriverByUsername(username string) (*models.Driver, e
 // CheckEmailPassword ...
 func (ds *DriverService) CheckEmailPassword(username, password string) (*models.Driver, error) {
 	// find user
-	filter := make(map[string]interface{})
-	filter["username"] = username
-
-	driver, err := ds.DriverRepository.FindOne(filter)
+	driver, err := ds.DriverRepository.FindOne(nil, &username)
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, "Username or password is incorrect.")
 	}
@@ -109,6 +97,21 @@ func (ds *DriverService) UpdateDriver(updateDriver *models.Driver) error {
 	err = ds.DriverRepository.Update(updateDriver)
 	if err != nil {
 		return status.Error(codes.Internal, "Update driver failed")
+	}
+
+	return err
+}
+
+func (ds *DriverService) DeleteDriver(driverID string) error {
+	_, err := ds.GetDriver(driverID)
+
+	if err != nil {
+		return status.Error(codes.NotFound, "Driver not found")
+	}
+
+	err = ds.DriverRepository.Delete(driverID)
+	if err != nil {
+		return status.Error(codes.Internal, "Delete driver failed")
 	}
 
 	return err
