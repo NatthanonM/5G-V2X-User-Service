@@ -116,8 +116,18 @@ func (dr *DriverRepository) Update(updateDriver *models.Driver) error {
 	defer cancel()
 
 	bsonFilter := bson.M{"_id": updateDriver.DriverID}
+	updateInput := bson.D{}
+	if updateDriver.Firstname != nil {
+		updateInput = append(updateInput, bson.E{"firstname", *updateDriver.Firstname})
+	}
+	if updateDriver.Lastname != nil {
+		updateInput = append(updateInput, bson.E{"lastname", *updateDriver.Lastname})
+	}
+	if updateDriver.DateOfBirth != nil {
+		updateInput = append(updateInput, bson.E{"date_of_birth", *updateDriver.DateOfBirth})
+	}
 	bsonUpdate := bson.D{
-		{"$set", bson.D{{"firstname", updateDriver.Firstname}, {"lastname", updateDriver.Lastname}, {"date_of_birth", updateDriver.DateOfBirth}}},
+		{"$set", updateInput},
 	}
 
 	_, err := collection.UpdateOne(ctx, bsonFilter, bsonUpdate)

@@ -9,6 +9,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc/codes"
@@ -28,12 +29,13 @@ func NewDriverController(DriverService *services.DriverService, Config *config.C
 }
 
 func (ds *DriverController) AddNewDriver(ctx context.Context, req *proto.AddNewDriverRequest) (*proto.AddNewDriverReponse, error) {
+	dateOfBirth := req.DateOfBirth.AsTime()
 	driver := models.Driver{
-		Firstname:   req.Firstname,
-		Lastname:    req.Lastname,
+		Firstname:   &req.Firstname,
+		Lastname:    &req.Lastname,
 		Username:    req.Username,
 		Password:    req.Password,
-		DateOfBirth: req.DateOfBirth.AsTime(),
+		DateOfBirth: &dateOfBirth,
 		Gender:      req.Gender.String(),
 	}
 	driverID, err := ds.DriverService.AddNewDriver(&driver)
@@ -55,9 +57,9 @@ func (ds *DriverController) GetAllDriver(ctx context.Context, req *empty.Empty) 
 	for _, driver := range drivers {
 		resDrivers = append(resDrivers, &proto.Driver{
 			DriverId:    driver.DriverID,
-			Firstname:   driver.Firstname,
-			Lastname:    driver.Lastname,
-			DateOfBirth: utils.WrapperTime(&driver.DateOfBirth),
+			Firstname:   *driver.Firstname,
+			Lastname:    *driver.Lastname,
+			DateOfBirth: utils.WrapperTime(driver.DateOfBirth),
 			Gender:      driver.Gender,
 			Username:    driver.Username,
 		})
@@ -76,9 +78,9 @@ func (ds *DriverController) GetDriver(ctx context.Context, req *proto.GetDriverR
 
 	return &proto.Driver{
 		DriverId:    driver.DriverID,
-		Firstname:   driver.Firstname,
-		Lastname:    driver.Lastname,
-		DateOfBirth: utils.WrapperTime(&driver.DateOfBirth),
+		Firstname:   *driver.Firstname,
+		Lastname:    *driver.Lastname,
+		DateOfBirth: utils.WrapperTime(driver.DateOfBirth),
 		Gender:      driver.Gender,
 		Username:    driver.Username,
 	}, nil
@@ -92,9 +94,9 @@ func (ds *DriverController) GetDriverByUsername(ctx context.Context, req *proto.
 	fmt.Println(driver)
 	return &proto.Driver{
 		DriverId:    driver.DriverID,
-		Firstname:   driver.Firstname,
-		Lastname:    driver.Lastname,
-		DateOfBirth: utils.WrapperTime(&driver.DateOfBirth),
+		Firstname:   *driver.Firstname,
+		Lastname:    *driver.Lastname,
+		DateOfBirth: utils.WrapperTime(driver.DateOfBirth),
 		Gender:      driver.Gender,
 		Username:    driver.Username,
 	}, nil
@@ -113,11 +115,16 @@ func (ds *DriverController) LoginDriver(ctx context.Context, req *proto.LoginDri
 }
 
 func (ds *DriverController) UpdateDriver(ctx context.Context, req *proto.UpdateDriverRequest) (*proto.UpdateDriverResponse, error) {
+	var dateOfBirth *time.Time
+	if req.DateOfBirth != nil {
+		dateOfBirthTm := req.DateOfBirth.AsTime()
+		dateOfBirth = &dateOfBirthTm
+	}
 	err := ds.DriverService.UpdateDriver(&models.Driver{
 		DriverID:    req.DriverId,
 		Firstname:   req.Firstname,
 		Lastname:    req.Lastname,
-		DateOfBirth: req.DateOfBirth.AsTime(),
+		DateOfBirth: dateOfBirth,
 	})
 
 	if err != nil {

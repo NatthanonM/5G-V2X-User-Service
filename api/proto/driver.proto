@@ -44,9 +44,9 @@ message LoginDriverResponse { string driver_id = 1; }
 
 message UpdateDriverRequest {
   string driver_id = 1;
-  string firstname = 2;
-  string lastname = 3;
-  google.protobuf.Timestamp date_of_birth = 4;
+  optional string firstname = 2;
+  optional string lastname = 3;
+  optional google.protobuf.Timestamp date_of_birth = 4;
 }
 
 message UpdateDriverResponse {}
