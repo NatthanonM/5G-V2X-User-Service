@@ -5,8 +5,8 @@ import "github.com/caarlos0/env/v6"
 // Config ...
 type Config struct {
 	ServiceAddress      string `env:"SERVICE_PORT" envDefault:"0.0.0.0:8083"`
-	DatabaseURI         string `env:"DATABASE_URI,file" envDefault:"./env/database_uri"`
-	DatabaseName        string `env:"DATABASE_NAME,file" envDefault:"./env/database_name"`
+	DatabaseURI         string `env:"DATABASE_URI" envDefault:""`
+	DatabaseName        string `env:"DATABASE_NAME" envDefault:""`
 	AccessTokenSecret   string `env:"ACCESS_TOKEN_SECRET" envDefault:"m8KP74IcTMiOYEhFP2Da"`
 	AccessTokenLifetime string `env:"ACCESS_TOKEN_LIFETIME" envDefault:"8h"`
 }

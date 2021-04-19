@@ -18,7 +18,6 @@ ADD go.mod /app/go.mod
 ADD go.sum /app/go.sum
 ADD api /app/api
 ADD internal /app/internal
-ADD env /app/env
 
 RUN go mod tidy
 RUN go mod vendor
