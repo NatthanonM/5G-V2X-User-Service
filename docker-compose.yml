@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  user-service:
+    build: .
+    ports:
+      - "80:8083"
+    environment:
+      SERVICE_ADDRESS:
+      ACCESS_TOKEN_LIFETIME:
+      DATABASE_URI:
+      DATABASE_NAME:
